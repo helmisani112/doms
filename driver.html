@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver Update</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h1>Driver Activity Update</h1>
+
+<form id="driverForm">
+
+<label>Driver Name</label>
+<input type="text" id="driverName" required>
+
+<label>Vehicle Plate No</label>
+<input type="text" id="plateNo" required>
+
+<label>Current Location</label>
+<input type="text" id="currentLocation" required>
+
+<label>Destination</label>
+<input type="text" id="destination">
+
+<label>Activity</label>
+<select id="activity">
+<option>Driving</option>
+<option>Loading</option>
+<option>Unloading</option>
+<option>Waiting</option>
+<option>Break</option>
+<option>Refuelling</option>
+<option>Maintenance</option>
+<option>Completed</option>
+</select>
+
+<label>Remarks (Optional)</label>
+<textarea id="remarks"></textarea>
+
+<label>Upload Photo (Optional)</label>
+<input type="file">
+
+<button type="submit">
+Submit Update
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
