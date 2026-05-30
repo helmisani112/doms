@@ -55,6 +55,7 @@ function checkAdminLogin() {
         loadDrivers();
         loadVehicles();
         loadMovements();
+        loadInspections();
     } else {
         loginBox.style.display = "block";
         adminContent.style.display = "none";
@@ -416,6 +417,52 @@ async function loadDashboard() {
 function copyText(text) {
     navigator.clipboard.writeText(text);
     alert("Driver link copied.");
+}
+
+async function loadInspections() {
+
+    const table = document.getElementById("inspectionTable");
+
+    if (!table) return;
+
+    const { data, error } = await supabaseClient
+        .from("vehicle_inspections")
+        .select(`
+            *,
+            drivers(driver_name),
+            vehicles(plate_no)
+        `)
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        table.innerHTML =
+            `<tr><td colspan="8">${error.message}</td></tr>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        table.innerHTML =
+            `<tr><td colspan="8">No inspection records found</td></tr>`;
+        return;
+    }
+
+    table.innerHTML = "";
+
+    data.forEach(record => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${record.drivers?.driver_name || "-"}</td>
+            <td>${record.vehicles?.plate_no || "-"}</td>
+            <td>${record.tyre_ok ? "OK" : "Not OK"}</td>
+            <td>${record.brake_ok ? "OK" : "Not OK"}</td>
+            <td>${record.lights_ok ? "OK" : "Not OK"}</td>
+            <td>${record.defect_found ? "Yes" : "No"}</td>
+            <td>${record.odometer || "-"}</td>
+            <td>${new Date(record.created_at).toLocaleString()}</td>
+        </tr>
+        `;
+    });
 }
 
 /* PAGE LOAD */
