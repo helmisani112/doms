@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Driver Update</title>
+    <title>DOMS Driver Update</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -10,45 +10,52 @@
 
 <h1>Driver Activity Update</h1>
 
+<div class="section">
+<p><b>Driver:</b> <span id="driverNameDisplay">Loading...</span></p>
+
 <form id="driverForm">
 
-<label>Driver Name</label>
-<input type="text" id="driverName" required>
-
 <label>Vehicle Plate No</label>
-<input type="text" id="plateNo" required>
+<select id="vehicleSelect" required></select>
+
+<label>Activity</label>
+<select id="activity" required>
+    <option>Vehicle Inspection</option>
+    <option>Start Duty</option>
+    <option>Pick Up</option>
+    <option>Drop Off</option>
+    <option>Standby</option>
+    <option>Break</option>
+    <option>Breakdown</option>
+    <option>Accident</option>
+    <option>End Duty</option>
+</select>
 
 <label>Current Location</label>
-<input type="text" id="currentLocation" required>
+<input type="text" id="location" required>
 
 <label>Destination</label>
 <input type="text" id="destination">
 
-<label>Activity</label>
-<select id="activity">
-<option>Driving</option>
-<option>Loading</option>
-<option>Unloading</option>
-<option>Waiting</option>
-<option>Break</option>
-<option>Refuelling</option>
-<option>Maintenance</option>
-<option>Completed</option>
-</select>
+<label>Passenger Count</label>
+<input type="number" id="passengerCount" min="0" value="0">
 
-<label>Remarks (Optional)</label>
+<label>Passenger Name (Optional)</label>
+<input type="text" id="passengerName">
+
+<label>Remarks</label>
 <textarea id="remarks"></textarea>
 
-<label>Upload Photo (Optional)</label>
-<input type="file">
-
-<button type="submit">
-Submit Update
-</button>
+<button type="submit">Submit Update</button>
 
 </form>
+</div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
