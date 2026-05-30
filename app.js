@@ -11,6 +11,60 @@ function getTokenFromUrl() {
     return params.get("token");
 }
 
+/* ADMIN LOGIN */
+
+async function adminLogin() {
+    const username = document.getElementById("adminUsername").value;
+    const password = document.getElementById("adminPassword").value;
+
+    const { data, error } = await supabaseClient
+        .from("admin_users")
+        .select("*")
+        .eq("username", username)
+        .eq("password", password)
+        .single();
+
+    if (error || !data) {
+        alert("Invalid username or password");
+        return;
+    }
+
+    sessionStorage.setItem("doms_admin", "true");
+
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("adminContent").style.display = "block";
+
+    loadDrivers();
+    loadVehicles();
+    loadMovements();
+}
+
+function adminLogout() {
+    sessionStorage.removeItem("doms_admin");
+    location.reload();
+}
+
+function checkAdminLogin() {
+    const loginBox = document.getElementById("loginBox");
+    const adminContent = document.getElementById("adminContent");
+
+    if (!loginBox || !adminContent) return;
+
+    if (sessionStorage.getItem("doms_admin") === "true") {
+        loginBox.style.display = "none";
+        adminContent.style.display = "block";
+
+        loadDrivers();
+        loadVehicles();
+        loadMovements();
+    } else {
+        loginBox.style.display = "block";
+        adminContent.style.display = "none";
+    }
+}
+
+/* ADMIN FUNCTIONS */
+
 async function addDriver() {
     const driverName = prompt("Enter driver name:");
     if (!driverName) return;
@@ -156,6 +210,8 @@ async function loadMovements() {
     `).join("");
 }
 
+/* DRIVER PAGE */
+
 async function loadDriverPage() {
     const driverNameDisplay = document.getElementById("driverNameDisplay");
     const vehicleSelect = document.getElementById("vehicleSelect");
@@ -235,22 +291,24 @@ async function submitDriverUpdate(event) {
     }
 
     alert("Update submitted successfully.");
-
     document.getElementById("driverForm").reset();
 }
+
+/* UTILITY */
 
 function copyText(text) {
     navigator.clipboard.writeText(text);
     alert("Driver link copied.");
 }
 
+/* PAGE LOAD */
+
 document.addEventListener("DOMContentLoaded", function () {
-    loadDrivers();
-    loadVehicles();
-    loadMovements();
+    checkAdminLogin();
     loadDriverPage();
 
     const driverForm = document.getElementById("driverForm");
+
     if (driverForm) {
         driverForm.addEventListener("submit", submitDriverUpdate);
     }
