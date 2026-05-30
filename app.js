@@ -30,7 +30,6 @@ async function adminLogin() {
     }
 
     sessionStorage.setItem("doms_admin", "true");
-
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("adminContent").style.display = "block";
 
@@ -53,7 +52,6 @@ function checkAdminLogin() {
     if (sessionStorage.getItem("doms_admin") === "true") {
         loginBox.style.display = "none";
         adminContent.style.display = "block";
-
         loadDrivers();
         loadVehicles();
         loadMovements();
@@ -76,7 +74,7 @@ async function addDriver() {
         driver_name: driverName,
         phone_number: phoneNumber,
         driver_token: token,
-        status: "Active"
+        status: "Off Duty"
     });
 
     if (error) {
@@ -137,7 +135,7 @@ async function loadDrivers() {
         <tr>
             <td>${driver.driver_name}</td>
             <td>${driver.phone_number || "-"}</td>
-            <td>${driver.status}</td>
+            <td>${driver.status || "-"}</td>
             <td>
                 <input value="${link}" readonly style="width:300px;">
                 <button onclick="copyText('${link}')">Copy</button>
@@ -186,7 +184,7 @@ async function loadMovements() {
             drivers(driver_name),
             vehicles(plate_no)
         `)
-        .order("id", { ascending: false });
+        .order("created_at", { ascending: false });
 
     if (error) {
         table.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
@@ -229,7 +227,6 @@ async function loadDriverPage() {
         .from("drivers")
         .select("*")
         .eq("driver_token", token)
-        .eq("status", "Active")
         .single();
 
     if (driverError || !driverData) {
@@ -267,6 +264,7 @@ async function submitDriverUpdate(event) {
     }
 
     const vehicleId = document.getElementById("vehicleSelect").value;
+    const driverStatus = document.getElementById("driverStatus").value;
     const activity = document.getElementById("activity").value;
     const location = document.getElementById("location").value;
     const destination = document.getElementById("destination").value;
@@ -274,7 +272,18 @@ async function submitDriverUpdate(event) {
     const passengerName = document.getElementById("passengerName").value;
     const remarks = document.getElementById("remarks").value;
 
-    const { error } = await supabaseClient.from("movement_updates").insert({
+    const tyreOk = document.getElementById("tyreOk").checked;
+    const brakeOk = document.getElementById("brakeOk").checked;
+    const lightsOk = document.getElementById("lightsOk").checked;
+    const mirrorsOk = document.getElementById("mirrorsOk").checked;
+    const hornOk = document.getElementById("hornOk").checked;
+    const fireExtinguisherOk = document.getElementById("fireExtinguisherOk").checked;
+    const firstAidOk = document.getElementById("firstAidOk").checked;
+    const odometer = document.getElementById("odometer").value || null;
+    const defectFound = document.getElementById("defectFound").value === "true";
+    const defectDescription = document.getElementById("defectDescription").value;
+
+    const { error: movementError } = await supabaseClient.from("movement_updates").insert({
         driver_id: currentDriver.id,
         vehicle_id: vehicleId,
         activity: activity,
@@ -285,13 +294,112 @@ async function submitDriverUpdate(event) {
         remarks: remarks
     });
 
-    if (error) {
-        alert("Error submitting update: " + error.message);
+    if (movementError) {
+        alert("Error submitting movement update: " + movementError.message);
         return;
+    }
+
+    const { error: statusError } = await supabaseClient
+        .from("drivers")
+        .update({
+            status: driverStatus
+        })
+        .eq("id", currentDriver.id);
+
+    if (statusError) {
+        alert("Movement saved, but driver status failed: " + statusError.message);
+        return;
+    }
+
+    if (activity === "Vehicle Inspection") {
+        const { error: inspectionError } = await supabaseClient.from("vehicle_inspections").insert({
+            driver_id: currentDriver.id,
+            vehicle_id: vehicleId,
+            tyre_ok: tyreOk,
+            brake_ok: brakeOk,
+            lights_ok: lightsOk,
+            mirrors_ok: mirrorsOk,
+            horn_ok: hornOk,
+            fire_extinguisher_ok: fireExtinguisherOk,
+            first_aid_ok: firstAidOk,
+            odometer: odometer ? Number(odometer) : null,
+            defect_found: defectFound,
+            defect_description: defectDescription
+        });
+
+        if (inspectionError) {
+            alert("Movement saved, but inspection failed: " + inspectionError.message);
+            return;
+        }
     }
 
     alert("Update submitted successfully.");
     document.getElementById("driverForm").reset();
+}
+
+/* DASHBOARD */
+
+async function loadDashboard() {
+    const { data: drivers } = await supabaseClient.from("drivers").select("*");
+    const { data: vehicles } = await supabaseClient.from("vehicles").select("*");
+
+    const { data: movements } = await supabaseClient
+        .from("movement_updates")
+        .select(`
+            *,
+            drivers(driver_name),
+            vehicles(plate_no)
+        `)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+    let onDuty = 0;
+    let standby = 0;
+    let offDuty = 0;
+
+    if (drivers) {
+        drivers.forEach(driver => {
+            const status = driver.status || "Off Duty";
+
+            if (status === "On Duty") onDuty++;
+            else if (status === "Standby") standby++;
+            else offDuty++;
+        });
+    }
+
+    if (document.getElementById("onDutyCount"))
+        document.getElementById("onDutyCount").innerText = onDuty;
+
+    if (document.getElementById("standbyCount"))
+        document.getElementById("standbyCount").innerText = standby;
+
+    if (document.getElementById("offDutyCount"))
+        document.getElementById("offDutyCount").innerText = offDuty;
+
+    if (document.getElementById("vehicleCount"))
+        document.getElementById("vehicleCount").innerText = vehicles ? vehicles.length : 0;
+
+    const table = document.getElementById("activityTable");
+    if (!table) return;
+
+    table.innerHTML = "";
+
+    if (!movements || movements.length === 0) {
+        table.innerHTML = `<tr><td colspan="6">No records yet</td></tr>`;
+        return;
+    }
+
+    movements.forEach(record => {
+        table.innerHTML += `
+        <tr>
+            <td>${record.drivers?.driver_name || "-"}</td>
+            <td>${record.vehicles?.plate_no || "-"}</td>
+            <td>${record.activity || "-"}</td>
+            <td>${record.location || "-"}</td>
+            <td>${record.destination || "-"}</td>
+            <td>${new Date(record.created_at).toLocaleString()}</td>
+        </tr>`;
+    });
 }
 
 /* UTILITY */
@@ -312,101 +420,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (driverForm) {
         driverForm.addEventListener("submit", submitDriverUpdate);
     }
+
+    if (
+        window.location.pathname.includes("index.html") ||
+        window.location.pathname.endsWith("/doms/")
+    ) {
+        loadDashboard();
+    }
 });
-
-/* DASHBOARD */
-
-async function loadDashboard() {
-
-    const { data: drivers } = await supabaseClient
-        .from("drivers")
-        .select("*");
-
-    const { data: vehicles } = await supabaseClient
-        .from("vehicles")
-        .select("*");
-
-    const { data: movements } = await supabaseClient
-        .from("movement_updates")
-        .select(`
-            *,
-            drivers(driver_name),
-            vehicles(plate_no)
-        `)
-        .order("created_at", { ascending: false })
-        .limit(20);
-
-    let onDuty = 0;
-    let standby = 0;
-    let offDuty = 0;
-
-    if (drivers) {
-
-        drivers.forEach(driver => {
-
-            const status = driver.status || "Off Duty";
-
-            if (status === "On Duty")
-                onDuty++;
-
-            else if (status === "Standby")
-                standby++;
-
-            else
-                offDuty++;
-
-        });
-
-    }
-
-    if (document.getElementById("onDutyCount"))
-        document.getElementById("onDutyCount").innerText = onDuty;
-
-    if (document.getElementById("standbyCount"))
-        document.getElementById("standbyCount").innerText = standby;
-
-    if (document.getElementById("offDutyCount"))
-        document.getElementById("offDutyCount").innerText = offDuty;
-
-    if (document.getElementById("vehicleCount"))
-        document.getElementById("vehicleCount").innerText = vehicles ? vehicles.length : 0;
-
-    const table = document.getElementById("activityTable");
-
-    if (!table) return;
-
-    table.innerHTML = "";
-
-    if (!movements || movements.length === 0) {
-
-        table.innerHTML = `
-        <tr>
-            <td colspan="6">No records yet</td>
-        </tr>
-        `;
-
-        return;
-    }
-
-    movements.forEach(record => {
-
-        table.innerHTML += `
-        <tr>
-            <td>${record.drivers?.driver_name || "-"}</td>
-            <td>${record.vehicles?.plate_no || "-"}</td>
-            <td>${record.activity || "-"}</td>
-            <td>${record.location || "-"}</td>
-            <td>${record.destination || "-"}</td>
-            <td>${new Date(record.created_at).toLocaleString()}</td>
-        </tr>
-        `;
-    });
-
-}
-
-if (window.location.pathname.includes("index.html") ||
-    window.location.pathname.endsWith("/doms/")) {
-
-    loadDashboard();
-
-}
