@@ -7,7 +7,25 @@
 <body>
 
 <div class="container">
+
 <h1>DOMS Admin Dashboard</h1>
+
+<div id="loginBox" class="section">
+    <h2>Admin Login</h2>
+
+    <label>Username</label>
+    <input type="text" id="adminUsername">
+
+    <label>Password</label>
+    <input type="password" id="adminPassword">
+
+    <br><br>
+    <button class="btn" onclick="adminLogin()">Login</button>
+</div>
+
+<div id="adminContent" style="display:none;">
+
+<button class="btn admin" onclick="adminLogout()">Logout</button>
 
 <div class="section">
 <h2>Driver Management</h2>
@@ -67,6 +85,8 @@
 <tr><td colspan="6">Loading...</td></tr>
 </tbody>
 </table>
+</div>
+
 </div>
 
 </div>
