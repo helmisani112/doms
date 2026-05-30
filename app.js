@@ -55,7 +55,7 @@ function checkAdminLogin() {
         loadDrivers();
         loadVehicles();
         loadMovements();
-        loadInspections();
+        
     } else {
         loginBox.style.display = "block";
         adminContent.style.display = "none";
