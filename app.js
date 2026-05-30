@@ -1,7 +1,14 @@
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+let currentDriver = null;
+
 function generateToken() {
     return Math.random().toString(36).substring(2, 10).toUpperCase();
+}
+
+function getTokenFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("token");
 }
 
 async function addDriver() {
@@ -149,6 +156,89 @@ async function loadMovements() {
     `).join("");
 }
 
+async function loadDriverPage() {
+    const driverNameDisplay = document.getElementById("driverNameDisplay");
+    const vehicleSelect = document.getElementById("vehicleSelect");
+
+    if (!driverNameDisplay || !vehicleSelect) return;
+
+    const token = getTokenFromUrl();
+
+    if (!token) {
+        driverNameDisplay.textContent = "Invalid link. No driver token found.";
+        return;
+    }
+
+    const { data: driverData, error: driverError } = await supabaseClient
+        .from("drivers")
+        .select("*")
+        .eq("driver_token", token)
+        .eq("status", "Active")
+        .single();
+
+    if (driverError || !driverData) {
+        driverNameDisplay.textContent = "Invalid or inactive driver link.";
+        return;
+    }
+
+    currentDriver = driverData;
+    driverNameDisplay.textContent = currentDriver.driver_name;
+
+    const { data: vehicles, error: vehicleError } = await supabaseClient
+        .from("vehicles")
+        .select("*")
+        .eq("status", "Active")
+        .order("plate_no", { ascending: true });
+
+    if (vehicleError) {
+        vehicleSelect.innerHTML = `<option>Error loading vehicles</option>`;
+        return;
+    }
+
+    vehicleSelect.innerHTML = vehicles.map(vehicle => `
+        <option value="${vehicle.id}">
+            ${vehicle.plate_no} - ${vehicle.vehicle_type}
+        </option>
+    `).join("");
+}
+
+async function submitDriverUpdate(event) {
+    event.preventDefault();
+
+    if (!currentDriver) {
+        alert("Invalid driver link.");
+        return;
+    }
+
+    const vehicleId = document.getElementById("vehicleSelect").value;
+    const activity = document.getElementById("activity").value;
+    const location = document.getElementById("location").value;
+    const destination = document.getElementById("destination").value;
+    const passengerCount = document.getElementById("passengerCount").value || 0;
+    const passengerName = document.getElementById("passengerName").value;
+    const remarks = document.getElementById("remarks").value;
+
+    const { error } = await supabaseClient.from("movement_updates").insert({
+        driver_id: currentDriver.id,
+        vehicle_id: vehicleId,
+        activity: activity,
+        location: location,
+        destination: destination,
+        passenger_count: Number(passengerCount),
+        passenger_name: passengerName,
+        remarks: remarks
+    });
+
+    if (error) {
+        alert("Error submitting update: " + error.message);
+        return;
+    }
+
+    alert("Update submitted successfully.");
+
+    document.getElementById("driverForm").reset();
+}
+
 function copyText(text) {
     navigator.clipboard.writeText(text);
     alert("Driver link copied.");
@@ -158,4 +248,10 @@ document.addEventListener("DOMContentLoaded", function () {
     loadDrivers();
     loadVehicles();
     loadMovements();
+    loadDriverPage();
+
+    const driverForm = document.getElementById("driverForm");
+    if (driverForm) {
+        driverForm.addEventListener("submit", submitDriverUpdate);
+    }
 });
