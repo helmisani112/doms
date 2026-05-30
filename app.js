@@ -295,8 +295,6 @@ async function submitDriverUpdate(event) {
         remarks: remarks
     });
 
-    const driverStatus = document.getElementById("driverStatus").value;
-
 await supabaseClient
     .from("drivers")
     .update({
