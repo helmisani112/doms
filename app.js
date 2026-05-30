@@ -295,13 +295,6 @@ async function submitDriverUpdate(event) {
         remarks: remarks
     });
 
-await supabaseClient
-    .from("drivers")
-    .update({
-        status: driverStatus
-    })
-    .eq("id", currentDriver.id);
-
     if (movementError) {
         alert("Error submitting movement update: " + movementError.message);
         return;
