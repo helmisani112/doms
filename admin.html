@@ -12,13 +12,10 @@
 
 <div id="loginBox" class="section">
     <h2>Admin Login</h2>
-
     <label>Username</label>
     <input type="text" id="adminUsername">
-
     <label>Password</label>
     <input type="password" id="adminPassword">
-
     <br><br>
     <button class="btn" onclick="adminLogin()">Login</button>
 </div>
@@ -29,60 +26,53 @@
 
 <div class="section">
 <h2>Driver Management</h2>
-
 <button class="btn" onclick="addDriver()">Add Driver</button>
-
 <table>
 <thead>
-<tr>
-<th>Driver</th>
-<th>Phone</th>
-<th>Status</th>
-<th>Access Link</th>
-</tr>
+<tr><th>Driver</th><th>Phone</th><th>Status</th><th>Access Link</th></tr>
 </thead>
-<tbody id="driversTable">
-<tr><td colspan="4">Loading...</td></tr>
-</tbody>
+<tbody id="driversTable"><tr><td colspan="4">Loading...</td></tr></tbody>
 </table>
 </div>
 
 <div class="section">
 <h2>Vehicle Management</h2>
-
 <button class="btn" onclick="addVehicle()">Add Vehicle</button>
-
 <table>
 <thead>
-<tr>
-<th>Plate No</th>
-<th>Vehicle Type</th>
-<th>Rental Company</th>
-<th>Status</th>
-</tr>
+<tr><th>Plate No</th><th>Vehicle Type</th><th>Rental Company</th><th>Status</th></tr>
 </thead>
-<tbody id="vehiclesTable">
-<tr><td colspan="4">Loading...</td></tr>
-</tbody>
+<tbody id="vehiclesTable"><tr><td colspan="4">Loading...</td></tr></tbody>
 </table>
 </div>
 
 <div class="section">
 <h2>Movement Records</h2>
+<table>
+<thead>
+<tr><th>Driver</th><th>Vehicle</th><th>Activity</th><th>Location</th><th>Destination</th><th>Time</th></tr>
+</thead>
+<tbody id="movementsTable"><tr><td colspan="6">Loading...</td></tr></tbody>
+</table>
+</div>
 
+<div class="section">
+<h2>Vehicle Inspection History</h2>
 <table>
 <thead>
 <tr>
 <th>Driver</th>
 <th>Vehicle</th>
-<th>Activity</th>
-<th>Location</th>
-<th>Destination</th>
+<th>Tyres</th>
+<th>Brake</th>
+<th>Lights</th>
+<th>Defect</th>
+<th>Odometer</th>
 <th>Time</th>
 </tr>
 </thead>
-<tbody id="movementsTable">
-<tr><td colspan="6">Loading...</td></tr>
+<tbody id="inspectionTable">
+<tr><td colspan="8">Loading...</td></tr>
 </tbody>
 </table>
 </div>
