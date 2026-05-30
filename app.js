@@ -313,3 +313,100 @@ document.addEventListener("DOMContentLoaded", function () {
         driverForm.addEventListener("submit", submitDriverUpdate);
     }
 });
+
+/* DASHBOARD */
+
+async function loadDashboard() {
+
+    const { data: drivers } = await supabaseClient
+        .from("drivers")
+        .select("*");
+
+    const { data: vehicles } = await supabaseClient
+        .from("vehicles")
+        .select("*");
+
+    const { data: movements } = await supabaseClient
+        .from("movement_updates")
+        .select(`
+            *,
+            drivers(driver_name),
+            vehicles(plate_no)
+        `)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+    let onDuty = 0;
+    let standby = 0;
+    let offDuty = 0;
+
+    if (drivers) {
+
+        drivers.forEach(driver => {
+
+            const status = driver.status || "Off Duty";
+
+            if (status === "On Duty")
+                onDuty++;
+
+            else if (status === "Standby")
+                standby++;
+
+            else
+                offDuty++;
+
+        });
+
+    }
+
+    if (document.getElementById("onDutyCount"))
+        document.getElementById("onDutyCount").innerText = onDuty;
+
+    if (document.getElementById("standbyCount"))
+        document.getElementById("standbyCount").innerText = standby;
+
+    if (document.getElementById("offDutyCount"))
+        document.getElementById("offDutyCount").innerText = offDuty;
+
+    if (document.getElementById("vehicleCount"))
+        document.getElementById("vehicleCount").innerText = vehicles ? vehicles.length : 0;
+
+    const table = document.getElementById("activityTable");
+
+    if (!table) return;
+
+    table.innerHTML = "";
+
+    if (!movements || movements.length === 0) {
+
+        table.innerHTML = `
+        <tr>
+            <td colspan="6">No records yet</td>
+        </tr>
+        `;
+
+        return;
+    }
+
+    movements.forEach(record => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${record.drivers?.driver_name || "-"}</td>
+            <td>${record.vehicles?.plate_no || "-"}</td>
+            <td>${record.activity || "-"}</td>
+            <td>${record.location || "-"}</td>
+            <td>${record.destination || "-"}</td>
+            <td>${new Date(record.created_at).toLocaleString()}</td>
+        </tr>
+        `;
+    });
+
+}
+
+if (window.location.pathname.includes("index.html") ||
+    window.location.pathname.endsWith("/doms/")) {
+
+    loadDashboard();
+
+}
