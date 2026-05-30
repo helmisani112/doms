@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOMS - Driver Operations & Movement System</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>🚗 DOMS</h1>
+        <p>Driver Operations & Movement System</p>
+    </header>
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>Drivers On Duty</h2>
+            <span id="onDuty">0</span>
+        </div>
+
+        <div class="card">
+            <h2>Drivers Standby</h2>
+            <span id="standby">0</span>
+        </div>
+
+        <div class="card">
+            <h2>Drivers Off Duty</h2>
+            <span id="offDuty">0</span>
+        </div>
+
+        <div class="card">
+            <h2>Vehicles Active</h2>
+            <span id="vehicles">0</span>
+        </div>
+
+    </div>
+
+    <div class="menu">
+
+        <a href="driver.html" class="btn">
+            Driver Update
+        </a>
+
+        <a href="admin.html" class="btn admin">
+            Admin Login
+        </a>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Latest Activities</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Driver</th>
+                    <th>Activity</th>
+                    <th>Location</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+
+            <tbody id="activityTable">
+                <tr>
+                    <td colspan="4">
+                        No records yet
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
