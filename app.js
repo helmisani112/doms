@@ -187,19 +187,24 @@ async function deleteDriver(driverId) {
 
     if (!confirmed) return;
 
-    const { error } = await supabaseClient
+    const { data, error } = await supabaseClient
         .from("drivers")
         .delete()
-        .eq("id", driverId);
+        .eq("id", driverId)
+        .select();
 
     if (error) {
         alert("Error deleting driver: " + error.message);
         return;
     }
 
+    if (!data || data.length === 0) {
+        alert("Driver was not deleted.");
+        return;
+    }
+
     alert("Driver deleted successfully.");
     loadDrivers();
-    loadDashboard();
 }
 
 async function deleteVehicle(vehicleId) {
@@ -207,19 +212,24 @@ async function deleteVehicle(vehicleId) {
 
     if (!confirmed) return;
 
-    const { error } = await supabaseClient
+    const { data, error } = await supabaseClient
         .from("vehicles")
         .delete()
-        .eq("id", vehicleId);
+        .eq("id", vehicleId)
+        .select();
 
     if (error) {
         alert("Error deleting vehicle: " + error.message);
         return;
     }
 
+    if (!data || data.length === 0) {
+        alert("Vehicle was not deleted.");
+        return;
+    }
+
     alert("Vehicle deleted successfully.");
     loadVehicles();
-    loadDashboard();
 }
 
 async function loadMovements() {
