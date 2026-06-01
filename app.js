@@ -127,23 +127,26 @@ async function loadDrivers() {
     }
 
     if (!data || data.length === 0) {
-        table.innerHTML = `<tr><td colspan="4">No drivers yet</td></tr>`;
+        table.innerHTML = `<tr><td colspan="5">No drivers yet</td></tr>`;
         return;
     }
 
     table.innerHTML = data.map(driver => {
         const link = `${window.location.origin}/doms/driver.html?token=${driver.driver_token}`;
 
-        return `
-        <tr>
-            <td>${driver.driver_name}</td>
-            <td>${driver.phone_number || "-"}</td>
-            <td>${driver.status || "-"}</td>
-            <td>
-                <input value="${link}" readonly style="width:300px;">
-                <button onclick="copyText('${link}')">Copy</button>
-            </td>
-        </tr>`;
+return `
+<tr>
+    <td>${driver.driver_name}</td>
+    <td>${driver.phone_number || "-"}</td>
+    <td>${driver.status || "-"}</td>
+    <td>
+        <input value="${link}" readonly style="width:300px;">
+        <button onclick="copyText('${link}')">Copy</button>
+    </td>
+    <td>
+        <button onclick="deleteDriver(${driver.id})">Delete</button>
+    </td>
+</tr>`;
     }).join("");
 }
 
@@ -157,23 +160,66 @@ async function loadVehicles() {
         .order("id", { ascending: false });
 
     if (error) {
-        table.innerHTML = `<tr><td colspan="4">${error.message}</td></tr>`;
+        table.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
         return;
     }
 
     if (!data || data.length === 0) {
-        table.innerHTML = `<tr><td colspan="4">No vehicles yet</td></tr>`;
+        table.innerHTML = `<tr><td colspan="5">No vehicles yet</td></tr>`;
         return;
     }
 
-    table.innerHTML = data.map(vehicle => `
-        <tr>
-            <td>${vehicle.plate_no}</td>
-            <td>${vehicle.vehicle_type}</td>
-            <td>${vehicle.rental_company || "-"}</td>
-            <td>${vehicle.status}</td>
-        </tr>
-    `).join("");
+table.innerHTML = data.map(vehicle => `
+<tr>
+    <td>${vehicle.plate_no}</td>
+    <td>${vehicle.vehicle_type}</td>
+    <td>${vehicle.rental_company || "-"}</td>
+    <td>${vehicle.status}</td>
+    <td>
+        <button onclick="deleteVehicle(${vehicle.id})">Delete</button>
+    </td>
+</tr>
+`).join("");
+}
+
+async function deleteDriver(driverId) {
+    const confirmed = confirm("Are you sure you want to delete this driver?");
+
+    if (!confirmed) return;
+
+    const { error } = await supabaseClient
+        .from("drivers")
+        .delete()
+        .eq("id", driverId);
+
+    if (error) {
+        alert("Error deleting driver: " + error.message);
+        return;
+    }
+
+    alert("Driver deleted successfully.");
+    loadDrivers();
+    loadDashboard();
+}
+
+async function deleteVehicle(vehicleId) {
+    const confirmed = confirm("Are you sure you want to delete this vehicle?");
+
+    if (!confirmed) return;
+
+    const { error } = await supabaseClient
+        .from("vehicles")
+        .delete()
+        .eq("id", vehicleId);
+
+    if (error) {
+        alert("Error deleting vehicle: " + error.message);
+        return;
+    }
+
+    alert("Vehicle deleted successfully.");
+    loadVehicles();
+    loadDashboard();
 }
 
 async function loadMovements() {
