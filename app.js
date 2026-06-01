@@ -22,7 +22,7 @@ async function adminLogin() {
         .select("*")
         .eq("username", username)
         .eq("password", password)
-        .single();
+        .maybeSingle();
 
     if (error || !data) {
         alert("Invalid username or password");
