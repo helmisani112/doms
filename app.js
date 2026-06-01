@@ -36,6 +36,7 @@ async function adminLogin() {
     loadDrivers();
     loadVehicles();
     loadMovements();
+    loadInspections();
 }
 
 function adminLogout() {
@@ -55,6 +56,7 @@ function checkAdminLogin() {
         loadDrivers();
         loadVehicles();
         loadMovements();
+        loadInspections();
         
     } else {
         loginBox.style.display = "block";
