@@ -479,5 +479,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     if (document.getElementById("inspectionTable")) {
     setTimeout(loadInspections, 1000);
+    setTimeout(loadInspections, 3000);
+    setTimeout(loadInspections, 5000);
     }
 });
