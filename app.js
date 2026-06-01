@@ -476,4 +476,8 @@ document.addEventListener("DOMContentLoaded", function () {
     ) {
         loadDashboard();
     }
+    
+    if (document.getElementById("inspectionTable")) {
+    setTimeout(loadInspections, 1000);
+    }
 });
