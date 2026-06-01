@@ -429,13 +429,13 @@ async function loadInspections() {
 
     if (error) {
         table.innerHTML =
-            `<tr><td colspan="8">${error.message}</td></tr>`;
+            `<tr><td colspan="13">${error.message}</td></tr>`;
         return;
     }
 
     if (!data || data.length === 0) {
         table.innerHTML =
-            `<tr><td colspan="8">No inspection records found</td></tr>`;
+            `<tr><td colspan="13">No inspection records found</td></tr>`;
         return;
     }
 
@@ -450,7 +450,12 @@ async function loadInspections() {
             <td>${record.tyre_ok ? "OK" : "Not OK"}</td>
             <td>${record.brake_ok ? "OK" : "Not OK"}</td>
             <td>${record.lights_ok ? "OK" : "Not OK"}</td>
+            <td>${record.mirrors_ok ? "OK" : "Not OK"}</td>
+            <td>${record.horn_ok ? "OK" : "Not OK"}</td>
+            <td>${record.fire_extinguisher_ok ? "OK" : "Not OK"}</td>
+            <td>${record.first_aid_ok ? "OK" : "Not OK"}</td>
             <td>${record.defect_found ? "Yes" : "No"}</td>
+            <td>${record.defect_description  || "-"}</td>
             <td>${record.odometer || "-"}</td>
             <td>${new Date(record.created_at).toLocaleString()}</td>
         </tr>
