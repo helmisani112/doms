@@ -246,12 +246,12 @@ async function loadMovements() {
         .order("created_at", { ascending: false });
 
     if (error) {
-        table.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+        table.innerHTML = `<tr><td colspan="7">${error.message}</td></tr>`;
         return;
     }
 
     if (!data || data.length === 0) {
-        table.innerHTML = `<tr><td colspan="6">No records yet</td></tr>`;
+        table.innerHTML = `<tr><td colspan="7">No records yet</td></tr>`;
         return;
     }
 
@@ -263,10 +263,10 @@ async function loadMovements() {
             <td>${row.location || "-"}</td>
             <td>${row.destination || "-"}</td>
             <td>${new Date(row.created_at).toLocaleString()}</td>
+            <td><button onclick="deleteMovement(${row.id})">Delete</button></td>
         </tr>
     `).join("");
 }
-
 /* DRIVER PAGE */
 
 async function loadDriverPage() {
@@ -485,13 +485,13 @@ async function loadInspections() {
 
     if (error) {
         table.innerHTML =
-            `<tr><td colspan="13">${error.message}</td></tr>`;
+            `<tr><td colspan="14">${error.message}</td></tr>`;
         return;
     }
 
     if (!data || data.length === 0) {
         table.innerHTML =
-            `<tr><td colspan="13">No inspection records found</td></tr>`;
+            `<tr><td colspan="14">No inspection records found</td></tr>`;
         return;
     }
 
@@ -514,9 +514,78 @@ async function loadInspections() {
             <td>${record.defect_description  || "-"}</td>
             <td>${record.odometer || "-"}</td>
             <td>${new Date(record.created_at).toLocaleString()}</td>
+            <td><button onclick="deleteInspection(${record.id})">Delete</button></td>
         </tr>
         `;
     });
+}
+
+async function deleteMovement(id) {
+    if (!confirm("Delete this movement record?")) return;
+
+    const { error } = await supabaseClient
+        .from("movement_updates")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        alert("Error deleting movement: " + error.message);
+        return;
+    }
+
+    alert("Movement deleted.");
+    loadMovements();
+}
+
+async function deleteInspection(id) {
+    if (!confirm("Delete this inspection record?")) return;
+
+    const { error } = await supabaseClient
+        .from("vehicle_inspections")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        alert("Error deleting inspection: " + error.message);
+        return;
+    }
+
+    alert("Inspection deleted.");
+    loadInspections();
+}
+
+function exportMovementsExcel() {
+    exportTableToCSV("movementsTable", "movement_records.csv");
+}
+
+function exportInspectionsExcel() {
+    exportTableToCSV("inspectionTable", "vehicle_inspection_history.csv");
+}
+
+function exportTableToCSV(tableId, filename) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+
+    let csv = [];
+    const rows = table.querySelectorAll("tr");
+
+    rows.forEach(row => {
+        const cols = row.querySelectorAll("td, th");
+        const rowData = [];
+
+        cols.forEach(col => {
+            let text = col.innerText.replace(/"/g, '""');
+            rowData.push(`"${text}"`);
+        });
+
+        csv.push(rowData.join(","));
+    });
+
+    const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
 }
 
 /* PAGE LOAD */
