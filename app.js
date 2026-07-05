@@ -476,17 +476,7 @@ async function loadDashboard() {
         return;
     }
 
-  const latestDate = new Date(movements[0].created_at).toLocaleDateString("en-GB", {
-    timeZone: "America/Paramaribo"
-});
-
-const latestDayMovements = movements.filter(record => {
-    return new Date(record.created_at).toLocaleDateString("en-GB", {
-        timeZone: "America/Paramaribo"
-    }) === latestDate;
-});
-
-latestDayMovements.forEach(record => {
+ movements.forEach(record => {
     table.innerHTML += `
     <tr>
         <td>${record.drivers?.driver_name || "-"}</td>
@@ -497,7 +487,6 @@ latestDayMovements.forEach(record => {
         <td>${surinameTime(record.created_at)}</td>
     </tr>`;
 });
-}
 
 /* UTILITY */
 
