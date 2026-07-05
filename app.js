@@ -378,7 +378,17 @@ async function submitDriverUpdate(event) {
         destination: destination,
         passenger_count: Number(passengerCount),
         passenger_name: passengerName,
-        remarks: remarks
+        remarks: remarks,
+        suriname_time: new Date().toLocaleString("en-GB", {
+    timeZone: "America/Paramaribo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+})
     });
 
     if (movementError) {
@@ -411,8 +421,18 @@ async function submitDriverUpdate(event) {
             first_aid_ok: firstAidOk,
             odometer: odometer ? Number(odometer) : null,
             defect_found: defectFound,
-            defect_description: defectDescription
-        });
+defect_description: defectDescription,
+suriname_time: new Date().toLocaleString("en-GB", {
+    timeZone: "America/Paramaribo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+})
+});
 
         if (inspectionError) {
             alert("Movement saved, but inspection failed: " + inspectionError.message);
