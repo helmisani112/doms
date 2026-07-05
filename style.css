@@ -107,13 +107,21 @@ table th {
     border: 1px solid #ddd;
 }
 .activity-scroll {
-    max-height: 350px;
-    overflow-y: auto;
+    height: 250px;
+    overflow-y: scroll;
     overflow-x: auto;
+    border: 1px solid #ddd;
+}
+
+.activity-scroll table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
 }
 
 .activity-scroll thead th {
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 10;
+    background: #003366;
 }
