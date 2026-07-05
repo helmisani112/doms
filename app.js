@@ -262,7 +262,16 @@ async function loadMovements() {
             <td>${row.activity || "-"}</td>
             <td>${row.location || "-"}</td>
             <td>${row.destination || "-"}</td>
-            <td>${new Date(row.created_at).toLocaleString()}</td>
+            <td>${new Date(row.created_at).toLocaleString("en-GB", {
+    timeZone: "America/Paramaribo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+})}</td>
             <td><button onclick="deleteMovement(${row.id})">Delete</button></td>
         </tr>
     `).join("");
@@ -532,7 +541,16 @@ async function loadInspections() {
             <td>${record.defect_found ? "Yes" : "No"}</td>
             <td>${record.defect_description  || "-"}</td>
             <td>${record.odometer || "-"}</td>
-            <td>${new Date(record.created_at).toLocaleString()}</td>
+            <td>${new Date(record.created_at).toLocaleString("en-GB", {
+    timeZone: "America/Paramaribo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+})}</td>
             <td><button onclick="deleteInspection(${record.id})">Delete</button></td>
         </tr>
         `;
