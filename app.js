@@ -619,4 +619,3 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(loadInspections, 5000);
     }
  });
-}
