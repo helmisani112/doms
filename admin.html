@@ -59,39 +59,60 @@
 </div>
 
 <div class="section">
-<h2>Movement Records</h2>
-<table>
-<thead>
-<tr><th>Driver</th><th>Vehicle</th><th>Activity</th><th>Location</th><th>Destination</th><th>Time</th></tr>
-</thead>
-<tbody id="movementsTable"><tr><td colspan="6">Loading...</td></tr></tbody>
-</table>
+    <h2>Movement Records</h2>
+
+    <button class="btn" onclick="exportMovementsExcel()">Export Excel</button>
+
+    <div class="table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Driver</th>
+                    <th>Vehicle</th>
+                    <th>Activity</th>
+                    <th>Location</th>
+                    <th>Destination</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="movementsTable">
+                <tr><td colspan="7">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div class="section">
-<h2>Vehicle Inspection History</h2>
-<table>
-<thead>
-<tr>
-<th>Driver</th>
-<th>Vehicle</th>
-<th>Tyres</th>
-<th>Brake</th>
-<th>Lights</th>
-<th>Mirrors</th>
-<th>Horn</th>
-<th>Fire Ext.</th>
-<th>First Aid</th>
-<th>Defect</th>
-<th>Defect Description</th>
-<th>Odometer</th>
-<th>Time</th>
-</tr>
-</thead>
-<tbody id="inspectionTable">
-<tr><td colspan="13">Loading...</td></tr>
-</tbody>
-</table>
+    <h2>Vehicle Inspection History</h2>
+
+    <button class="btn" onclick="exportInspectionsExcel()">Export Excel</button>
+
+    <div class="table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Driver</th>
+                    <th>Vehicle</th>
+                    <th>Tyres</th>
+                    <th>Brake</th>
+                    <th>Lights</th>
+                    <th>Mirrors</th>
+                    <th>Horn</th>
+                    <th>Fire Ext.</th>
+                    <th>First Aid</th>
+                    <th>Defect</th>
+                    <th>Defect Description</th>
+                    <th>Odometer</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="inspectionTable">
+                <tr><td colspan="14">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 </div>
