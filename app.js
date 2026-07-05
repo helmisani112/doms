@@ -448,18 +448,23 @@ async function loadDashboard() {
         return;
     }
 
-    movements.forEach(record => {
-        table.innerHTML += `
-        <tr>
-            <td>${record.drivers?.driver_name || "-"}</td>
-            <td>${record.vehicles?.plate_no || "-"}</td>
-            <td>${record.activity || "-"}</td>
-            <td>${record.location || "-"}</td>
-            <td>${record.destination || "-"}</td>
-            <td>${new Date(record.created_at).toLocaleString()}</td>
-        </tr>`;
-    });
-}
+    const latestDate = new Date(movements[0].created_at).toLocaleDateString();
+
+const latestDayMovements = movements.filter(record => {
+    return new Date(record.created_at).toLocaleDateString() === latestDate;
+});
+
+latestDayMovements.forEach(record => {
+    table.innerHTML += `
+    <tr>
+        <td>${record.drivers?.driver_name || "-"}</td>
+        <td>${record.vehicles?.plate_no || "-"}</td>
+        <td>${record.activity || "-"}</td>
+        <td>${record.location || "-"}</td>
+        <td>${record.destination || "-"}</td>
+        <td>${new Date(record.created_at).toLocaleString()}</td>
+    </tr>`;
+});
 
 /* UTILITY */
 
