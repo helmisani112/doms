@@ -606,12 +606,13 @@ document.addEventListener("DOMContentLoaded", function () {
         driverForm.addEventListener("submit", submitDriverUpdate);
     }
 
-    if (
-        window.location.pathname.includes("index.html") ||
-        window.location.pathname.endsWith("/doms/")
-    ) {
-        loadDashboard();
-    }
+   if (
+    window.location.pathname.includes("index.html") ||
+    window.location.pathname.endsWith("/doms/") ||
+    window.location.pathname.endsWith("/doms")
+) {
+    loadDashboard();
+}
     
     if (document.getElementById("inspectionTable")) {
     setTimeout(loadInspections, 1000);
