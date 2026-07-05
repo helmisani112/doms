@@ -100,3 +100,9 @@ table th {
     top: 0;
     z-index: 2;
 }
+.table-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #ddd;
+}
