@@ -462,9 +462,9 @@ latestDayMovements.forEach(record => {
         <td>${record.activity || "-"}</td>
         <td>${record.location || "-"}</td>
         <td>${record.destination || "-"}</td>
-        <td>${new Date(record.created_at).toLocaleString()}</td>
+              <td>${new Date(record.created_at).toLocaleString()}</td>
     </tr>`;
-    });
+});
 }
 
 /* UTILITY */
