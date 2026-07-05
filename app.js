@@ -618,4 +618,5 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(loadInspections, 3000);
     setTimeout(loadInspections, 5000);
     }
-});
+ });
+}
