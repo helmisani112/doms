@@ -476,14 +476,10 @@ async function loadDashboard() {
         return;
     }
 
-    const latestDate = surinameTime(movements[0].created_at).toLocaleDateString("en-GB", {
-    timeZone: "America/Paramaribo"
-});
+   const latestDate = surinameTime(movements[0].created_at).split(",")[0];
 
 const latestDayMovements = movements.filter(record => {
-    return surinameTime(record.created_at).toLocaleDateString("en-GB", {
-    timeZone: "America/Paramaribo"
-}) === latestDate;
+    return surinameTime(record.created_at).split(",")[0] === latestDate;
 });
 
 latestDayMovements.forEach(record => {
@@ -494,16 +490,7 @@ latestDayMovements.forEach(record => {
         <td>${record.activity || "-"}</td>
         <td>${record.location || "-"}</td>
         <td>${record.destination || "-"}</td>
-             <td>${surinameTime(record.created_at).toLocaleString("en-GB", {
-    timeZone: "America/Paramaribo",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false
-})}</td>
+        <td>${surinameTime(record.created_at)}</td>
     </tr>`;
 });
 }
