@@ -106,3 +106,14 @@ table th {
     overflow-x: auto;
     border: 1px solid #ddd;
 }
+.activity-scroll {
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.activity-scroll thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
