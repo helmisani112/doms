@@ -469,8 +469,6 @@ latestDayMovements.forEach(record => {
 
 /* UTILITY */
 
-/* UTILITY */
-
 function copyText(text) {
     navigator.clipboard.writeText(text);
     alert("Driver link copied.");
