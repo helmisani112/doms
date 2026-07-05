@@ -476,10 +476,14 @@ async function loadDashboard() {
         return;
     }
 
-   const latestDate = surinameTime(movements[0].created_at).split(",")[0];
+  const latestDate = new Date(movements[0].created_at).toLocaleDateString("en-GB", {
+    timeZone: "America/Paramaribo"
+});
 
 const latestDayMovements = movements.filter(record => {
-    return surinameTime(record.created_at).split(",")[0] === latestDate;
+    return new Date(record.created_at).toLocaleDateString("en-GB", {
+        timeZone: "America/Paramaribo"
+    }) === latestDate;
 });
 
 latestDayMovements.forEach(record => {
