@@ -1,7 +1,22 @@
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentDriver = null;
+function surinameTime(value) {
+    if (!value) return "-";
 
+    const iso = value.endsWith("Z") ? value : value + "Z";
+
+    return new Date(iso).toLocaleString("en-GB", {
+        timeZone: "America/Paramaribo",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+    });
+}
 function generateToken() {
     return Math.random().toString(36).substring(2, 10).toUpperCase();
 }
@@ -262,7 +277,7 @@ async function loadMovements() {
             <td>${row.activity || "-"}</td>
             <td>${row.location || "-"}</td>
             <td>${row.destination || "-"}</td>
-            <td>${new Date(row.created_at).toLocaleString("en-GB", {
+            <td>${surinameTime(row.created_at).toLocaleString("en-GB", {
     timeZone: "America/Paramaribo",
     day: "2-digit",
     month: "2-digit",
@@ -457,12 +472,12 @@ async function loadDashboard() {
         return;
     }
 
-    const latestDate = new Date(movements[0].created_at).toLocaleDateString("en-GB", {
+    const latestDate = surinameTime(movements[0].created_at).toLocaleDateString("en-GB", {
     timeZone: "America/Paramaribo"
 });
 
 const latestDayMovements = movements.filter(record => {
-    return new Date(record.created_at).toLocaleDateString("en-GB", {
+    return surinameTime(record.created_at).toLocaleDateString("en-GB", {
     timeZone: "America/Paramaribo"
 }) === latestDate;
 });
@@ -475,7 +490,7 @@ latestDayMovements.forEach(record => {
         <td>${record.activity || "-"}</td>
         <td>${record.location || "-"}</td>
         <td>${record.destination || "-"}</td>
-             <td>${new Date(record.created_at).toLocaleString("en-GB", {
+             <td>${surinameTime(record.created_at).toLocaleString("en-GB", {
     timeZone: "America/Paramaribo",
     day: "2-digit",
     month: "2-digit",
@@ -541,7 +556,7 @@ async function loadInspections() {
             <td>${record.defect_found ? "Yes" : "No"}</td>
             <td>${record.defect_description  || "-"}</td>
             <td>${record.odometer || "-"}</td>
-            <td>${new Date(record.created_at).toLocaleString("en-GB", {
+            <td>${surinameTime(record.created_at).toLocaleString("en-GB", {
     timeZone: "America/Paramaribo",
     day: "2-digit",
     month: "2-digit",
