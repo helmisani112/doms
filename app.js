@@ -5,8 +5,12 @@ function surinameTime(value) {
     if (!value) return "-";
 
     const iso = value.endsWith("Z") ? value : value + "Z";
+    const date = new Date(iso);
 
-    return new Date(iso).toLocaleString("en-GB", {
+    // Correct Supabase timestamp offset to match Suriname actual time
+    date.setHours(date.getHours() + 8);
+
+    return date.toLocaleString("en-GB", {
         timeZone: "America/Paramaribo",
         day: "2-digit",
         month: "2-digit",
